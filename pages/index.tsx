@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import Content from '../components/Content'
 import styles from '../styles/Home.module.css'
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { baseURL } from '../config'
 
 
@@ -26,7 +28,31 @@ interface Props {
 }
 
 export default function Home({ memes }: Props) {
+  const [data, setData] = useState(memes)
+  const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    const handleBottomPage = () => {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        setLoading(true)
+        fetch(`${baseURL}/api/memes`).then(data => data.json())
+          .then(async (data) => {
+            await new Promise(resolve => {
+              setTimeout(resolve, 2000)
+            })
+            setData(prev => [...prev, ...(data.memes)])
+          })
+          .then(() => setLoading(false))
+          .catch(err => console.error(err))
+      }
+    }
+
+    window.addEventListener('scroll', handleBottomPage);
+    return () => {
+      window.removeEventListener('scroll', handleBottomPage);
+    }
+  }, [])
+  
   return (
       <div className={styles.container}>
 
@@ -40,11 +66,14 @@ export default function Home({ memes }: Props) {
 
           <Container style={styleObj.cardGrid} maxWidth="md">
             <Grid container spacing={4}>
-              {memes && memes.length && memes.map((meme, i) => (
+              {data && data.length > 0 && data.map((meme, i) => (
                 <Content key={`${meme.ups}${meme.title}`} data={meme} id={i} />
               ))}
             </Grid>
           </Container>
+          {loading && (<Grid container justify="center">
+            <CircularProgress />
+          </Grid>)}
         </main>
 
         <footer className={styles.footer}>
