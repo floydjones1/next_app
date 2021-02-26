@@ -7,6 +7,7 @@ import React from 'react'
 import { Typography } from '@material-ui/core'
 import StarIcon from '@material-ui/icons/Star';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import { baseURL } from '../../config'
 import { Imeme } from '..'
 
 
@@ -40,21 +41,21 @@ export default function Meme(props) {
   return (
     <Container style={style.container}>
       <Fab style={style.backButton} onClick={() => Router.back()} color="primary" aria-label="back">
-  <KeyboardBackspaceIcon />
-</Fab>
+        <KeyboardBackspaceIcon />
+      </Fab>
       <Paper elevation={3} style={style.paper}>
         <Grid container>
           <Grid item xs={8}><Typography component="h4" variant="h4">Author: {author}</Typography>
             <Typography component="h6" variant="h6">NSFW: {nsfw ? 'YES' : 'NO'}</Typography></Grid>
-          <Grid container justify="flex-end" item xs={4}><Typography component="body1" variant="body1">{ups}</Typography><StarIcon /></Grid>
+          <Grid container justify="flex-end" item xs={4}><Typography variant="body1">{ups}</Typography><StarIcon /></Grid>
 
         </Grid>
         <Grid container spacing={2} justify="center" direction="column" alignItems="center">
           <Grid item><img src={img} /></Grid>
           <Grid item>
-            <Typography component="body1" variant="body1">Click here to view original link <a style={style.link} href={postLink} target="_blank">here</a></Typography>
-            </Grid>
-            <Grid item><Typography style={style.textCenter} component="h3" variant="h3">{title}</Typography></Grid>
+            <Typography variant="body1">Click here to view original link <a style={style.link} href={postLink} target="_blank">here</a></Typography>
+          </Grid>
+          <Grid item><Typography style={style.textCenter} component="h3" variant="h3">{title}</Typography></Grid>
         </Grid>
 
       </Paper>
@@ -64,7 +65,7 @@ export default function Meme(props) {
 
 export async function getServerSideProps(context) {
   const { id } = context.params
-  const res = await fetch(`http://localhost:3000/api/memes/${id}`)
+  const res = await fetch(`${baseURL}/api/memes/${id}`)
   const meme: Imeme = await res.json()
 
   return {

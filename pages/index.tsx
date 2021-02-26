@@ -2,6 +2,7 @@ import Content from '../components/Content'
 import styles from '../styles/Home.module.css'
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import { baseURL } from '../config'
 
 
 const styleObj: { [key: string]: React.CSSProperties} = {
@@ -74,8 +75,8 @@ export interface Imeme {
   preview: Array<string>
 }
 
-export async function getStaticProps() {
-  const res = await fetch('http://localhost:3000/api/memes')
+export async function getServerSideProps() {
+  const res = await fetch(`${baseURL}/api/memes`)
   const { memes }: { memes: Array<Imeme> } = await res.json()
 
   return {
